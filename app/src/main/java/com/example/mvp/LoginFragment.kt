@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.fragments.databinding.LayoutLoginBinding
+import com.example.mvp.databinding.LayoutLoginBinding
 
 class LoginFragment:Fragment() {
     companion object {
