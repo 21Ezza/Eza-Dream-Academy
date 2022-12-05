@@ -2,6 +2,8 @@ package com.example.mvp.data.network.api
 
 import com.example.mvp.data.model.User
 import com.example.mvp.data.network.NetworkClient
+import com.example.mvp.deserializeJson
+import com.example.mvp.model.UserPagination
 import com.example.mvpapplication.data.network.ResponseStatus
 import com.example.mvpapplication.data.network.getIntData
 import okhttp3.Call
@@ -51,15 +53,22 @@ class ReqresApi {
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
-                        val body = JSONObject(response.body?.string() ?: "")
+                        val userPagination = deserializeJson<UserPagination>(response.body?.string()?: "")?: UserPagination()
+//                        val body = JSONObject(response.body?.string() ?: "")
                         onResponse.invoke(
-                            ResponseStatus.SuccessPagination(
+                            ResponseStatus.Success(
+                                data = userPagination.data,
+                                method = "GET",
+                                status = true
+
+                            )
+                           /* ResponseStatus.SuccessPagination(
                                 page = body.getIntData("page"),
                                 perPage = body.getIntData("per_page"),
                                 total = body.getIntData("total"),
                                 totalPages = body.getIntData("total_pages"),
                                 data = mapUsers(body)
-                            )
+                            )*/
                         )
                     } else {
                         onResponse.invoke(
