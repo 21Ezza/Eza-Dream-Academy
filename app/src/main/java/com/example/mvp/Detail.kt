@@ -24,7 +24,13 @@ class Detail : AppCompatActivity() {
 
         binding.textView1.text = "First Name : $firtName\n" +
                 "Last Name : $lastName\n" +
-                "Email : $email"
+                "Email : $email" +
+                "Avatar : $avatar"
+        Glide.with(this)
+            .load(avatar)
+            .fitCenter()
+            .placeholder(R.drawable.profile_picture)
+            .into(binding.ivProfile)
 
         /*val imageView = binding.ivProfile
         Glide.with(imageView)
