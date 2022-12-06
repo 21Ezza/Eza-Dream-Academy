@@ -16,6 +16,8 @@ import com.example.mvp.data.network.NetworkClient
 import com.example.mvp.data.network.api.ReqresApi
 import com.example.mvpapplication.data.network.ResponseStatus
 import com.example.mvp.databinding.ActivityMainBinding
+import com.example.mvp.network.api.UserApi
+import com.example.mvp.network.model.UserPagination
 import com.example.okhttp.UserAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +40,21 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.btnSyncCall.setOnClickListener {
+            UserApi().getUsers { UserPagination, error ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    if (error == null){
+                        binding.tvHasil.text = UserPagination?.data?.joinToString("\n") { it.email }
+                    } else {
+                        AlertDialog
+                            .Builder(this@MainActivity)
+                            .setMessage(error.message)
+                            .create().show()
+                    }
+                }
+            }
+        }
 
         binding.rvUser.apply {
             adapter = this@MainActivity.adapter
@@ -64,14 +81,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnSyncCall.setOnClickListener {
-            showProgress(true)
-            CoroutineScope(Dispatchers.IO).launch {
-                networkClient.getSync("/recipes").use {
-                    showProgress(false)
-                }
-            }
-        }
         adapter.setOnCardClickListener(rvListener)
     }
 
