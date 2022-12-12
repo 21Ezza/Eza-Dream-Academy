@@ -27,6 +27,7 @@
             <TextView
                 android:id="@+id/tvEmail"
                 android:layout_width="0dp"
+                android:textColor=""
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@id/tvName"
                 app:layout_constraintStart_toStartOf="@id/tvName"
