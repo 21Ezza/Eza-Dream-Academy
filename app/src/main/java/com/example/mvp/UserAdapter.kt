@@ -1,16 +1,16 @@
-package com.example.okhttp
+package com.example.mvp
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.mvp.data.model.User
 import com.example.mvp.databinding.ItemUserBinding
+import com.example.mvp.network.model.MakeUpItem
 
 class UserAdapter: RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+    private val data = mutableListOf<MakeUpItem>()
+    private var _listener: ((MakeUpItem) -> Unit)? = null
 
-    private var cardClickListener: ((firstName : String, lastName : String, email: String, avatar: String) -> Unit)? = null
-    private val data = mutableListOf<User>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -18,12 +18,12 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(data[position], cardClickListener)
+        holder.setData(data[position], _listener)
     }
 
     override fun getItemCount(): Int = data.size
 
-    fun submitList(list: List<User>) {
+    fun submitList(list: List<MakeUpItem>) {
         val initSize = itemCount
         data.clear()
         notifyItemRangeRemoved(0, initSize)
@@ -32,22 +32,26 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(private val binding: ItemUserBinding): RecyclerView.ViewHolder(binding.root) {
-        fun setData(item: User, listener: ((String, String, String, String) -> Unit)?) {
+        fun setData(item: MakeUpItem, listener: ((MakeUpItem) -> Unit)?) {
             with(binding) {
-                tvName.text = "${item.firstName} ${item.lastName}"
-                tvThumbnail.text = item.email
-                /*tvEmail.text = item.email*/
-                Glide
-                    .with(root.context)
-                    .load(item.avatar)
-                    .into(ivAvatar)
+                tvName.text = item.name?.trim()
+                tvThumbnail.text = item.brand
+                tvEmail.text = "${item.priceSign} ${item.price}"
+                item.imageLink?.let { img ->
+                    Glide
+                        .with(root.context)
+                        .load(img)
+                        .into(ivAvatar)
+                }
+
                 root.setOnClickListener {
-                    listener?.invoke(item.firstName, item.lastName, item.email, item.avatar)
+                    listener?.invoke(item)
                 }
             }
         }
     }
-    fun setOnCardClickListener(listener: (String, String, String, String) -> Unit){
-        this.cardClickListener = listener
+
+    fun setListener(listener: (MakeUpItem) -> Unit) {
+        this._listener = listener
     }
 }
