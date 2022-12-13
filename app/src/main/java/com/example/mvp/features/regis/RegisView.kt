@@ -1,9 +1,8 @@
-package com.example.mvp.features
+package com.example.mvp.features.regis
 
-interface LoginView {
+interface RegisView {
     fun onLoading()
     fun onFinishedLoading()
     fun onError(message: String)
     fun onSuccessLogin()
-
 }

@@ -1,15 +1,16 @@
-package com.example.mvp
+package com.example.mvp.features
 
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import com.example.mvp.features.regis.MainRegis
 import com.example.mvp.databinding.ActivityMainBinding
-import com.example.mvp.features.LoginPresenter
-import com.example.mvp.features.LoginView
+import com.example.mvp.features.loginUi.LoginPresenter
+import com.example.mvp.features.loginUi.LoginView
 
 class MainActivity : AppCompatActivity(), LoginView {
     private lateinit var binding: ActivityMainBinding
@@ -28,8 +29,20 @@ class MainActivity : AppCompatActivity(), LoginView {
             )
 
         }
+
+        binding.lupa.setOnClickListener {
+            startActivity(Intent(this, MainRegis::class.java))
+        }
+
         binding.textInput.editText?.doOnTextChanged() { text, start, before, count ->
             validateInput()
+            if (binding.textInput.editText?.text?.length!! < 5) {
+                binding.textInput.error = "Invalid User"
+            } else {
+                binding.textInput.isErrorEnabled = false
+            }
+
+
         }
 
         binding.textPassword.editText?.doOnTextChanged { text, start, before, count ->
@@ -44,6 +57,7 @@ class MainActivity : AppCompatActivity(), LoginView {
                 .isNotBlank()
     }
 
+
     override fun onLoading() {
         binding.progressIndicator.isVisible = true
     }
@@ -53,7 +67,9 @@ class MainActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onError(message: String) {
-            binding.textPassword.error = message
+
+        binding.textPassword.error = message
+
 
 
         /*AlertDialog.Builder(this)
@@ -73,6 +89,7 @@ class MainActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onSuccessLogin() {
+        binding.textInput.isErrorEnabled = false
         binding.textPassword.isErrorEnabled = false
         Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
     }

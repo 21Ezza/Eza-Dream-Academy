@@ -1,9 +1,11 @@
-package com.example.mvp.features
+package com.example.mvp.features.loginUi
 
 class LoginPresenter {
     companion object {
 
     }
+
+
 
 
     private var view: LoginView? = null
@@ -16,8 +18,10 @@ class LoginPresenter {
         this.view = null
     }
 
+
+
     fun validateCredential(userName: String, password: String) {
-        view?.onLoading()
+
         val isPasswordValid = password.contains("[a-z]".toRegex())
                 && password.contains("[A-Z]".toRegex())
                 && password.contains("[0-9]".toRegex())
@@ -25,20 +29,19 @@ class LoginPresenter {
 
         val isUsernameValid = userName.length > 5
 
-
+        view?.onLoading()
         if (isPasswordValid && isUsernameValid) {
             view?.onSuccessLogin()
         } else if (!isUsernameValid && !isPasswordValid) {
             view?.onError("invalid username & password")
-        }
-        else if (!isUsernameValid) {
-            view?.onError("invalid username")
-        }
-        else {
-            view?.onError("invalid password ")
+        } else if(!isPasswordValid){
+            view?.onError("invalid password")
+        } else{
+            /*view?.onError("invalid username")*/
         }
 
         view?.onFinishedLoading()
 
     }
+
 }
