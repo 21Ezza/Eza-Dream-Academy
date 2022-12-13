@@ -1,6 +1,11 @@
 package com.example.mvp.features
 
 class LoginPresenter {
+    companion object {
+
+    }
+
+
     private var view: LoginView? = null
 
     fun onAttach(view: LoginView) {
@@ -20,12 +25,17 @@ class LoginPresenter {
 
         val isUsernameValid = userName.length > 5
 
+
         if (isPasswordValid && isUsernameValid) {
             view?.onSuccessLogin()
-        } else if (!isUsernameValid) {
+        } else if (!isUsernameValid && !isPasswordValid) {
+            view?.onError("invalid username & password")
+        }
+        else if (!isUsernameValid) {
             view?.onError("invalid username")
-        } else {
-            view?.onError("invalid password")
+        }
+        else {
+            view?.onError("invalid password ")
         }
 
         view?.onFinishedLoading()

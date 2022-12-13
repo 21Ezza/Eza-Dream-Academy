@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), LoginView {
                 binding.textInput.editText?.text.toString(),
                 binding.textPassword.editText?.text.toString()
             )
+
         }
         binding.textInput.editText?.doOnTextChanged() { text, start, before, count ->
             validateInput()
@@ -48,18 +49,19 @@ class MainActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onFinishedLoading() {
-        TODO("Not yet implemented")
         binding.progressIndicator.isVisible = false
     }
 
     override fun onError(message: String) {
+            binding.textPassword.error = message
 
-        AlertDialog.Builder(this)
+
+        /*AlertDialog.Builder(this)
             .setMessage(message)
             .setPositiveButton("Ok", this::dialogClickListener)
             .setNegativeButton("Cancel", this::dialogClickListener)
             .create()
-            .show()
+            .show()*/
 //        binding.textPassword.error = "Password must contain Uppercase, Lowercase, Numbers, Special Character & At least 8 Character"
     }
     private fun dialogClickListener(dialogInterface: DialogInterface, button: Int) {
@@ -71,6 +73,7 @@ class MainActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onSuccessLogin() {
+        binding.textPassword.isErrorEnabled = false
         Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
     }
 
