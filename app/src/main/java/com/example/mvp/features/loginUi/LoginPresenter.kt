@@ -5,6 +5,8 @@ class LoginPresenter {
 
     }
 
+    private var isUsernameValid = true
+    private var isPasswordValid = true
 
 
 
@@ -18,30 +20,37 @@ class LoginPresenter {
         this.view = null
     }
 
+    fun validateUser(userName: String): Boolean {
+        val isUsernameValid = userName.length >= 5
+        if (!isUsernameValid){
+            view?.onError(1, "invalid username")
+        } else {
+            view?.onErrorUser()
+        }
+        return isUsernameValid
+    }
 
-
-    fun validateCredential(userName: String, password: String) {
-
+    fun validatePassword(password: String): Boolean {
         val isPasswordValid = password.contains("[a-z]".toRegex())
                 && password.contains("[A-Z]".toRegex())
                 && password.contains("[0-9]".toRegex())
                 && password.length >= 8
-
-        val isUsernameValid = userName.length > 5
-
-        view?.onLoading()
-        if (isPasswordValid && isUsernameValid) {
-            view?.onSuccessLogin()
-        } else if (!isUsernameValid && !isPasswordValid) {
-            view?.onError("invalid username & password")
-        } else if(!isPasswordValid){
-            view?.onError("invalid password")
+        if (!isPasswordValid){
+            view?.onError(2,"invalid password")
         } else{
-            /*view?.onError("invalid username")*/
+            view?.onErrorPassword()
         }
+        return isPasswordValid
+    }
 
+
+
+    fun validateCredential() {
+
+        if (isPasswordValid && isUsernameValid){
+            view?.onSuccessLogin()
+        }
         view?.onFinishedLoading()
-
     }
 
 }

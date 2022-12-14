@@ -13,8 +13,17 @@
         android:theme="@style/Theme.Mvp"
         tools:targetApi="31">
         <activity
-            android:name=".features.regis.MainRegis"
+            android:name=".features.homepage.Home"
             android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".features.regis.MainRegis"
+            android:exported="false"
+            android:label="@string/title_activity_main_regis"
+            android:theme="@style/Theme.Mvp.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

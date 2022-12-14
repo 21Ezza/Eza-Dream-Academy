@@ -175,7 +175,7 @@
                 android:clickable="false"
                 android:clipToOutline="true"
                 android:elevation="10dp"
-                android:enabled="true"
+                android:enabled="false"
                 android:text="Masuk"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"

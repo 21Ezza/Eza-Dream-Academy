@@ -7,10 +7,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import com.example.mvp.features.regis.MainRegis
 import com.example.mvp.databinding.ActivityMainBinding
+import com.example.mvp.features.homepage.Home
 import com.example.mvp.features.loginUi.LoginPresenter
 import com.example.mvp.features.loginUi.LoginView
+import com.example.mvp.features.regis.MainRegis
 
 class MainActivity : AppCompatActivity(), LoginView {
     private lateinit var binding: ActivityMainBinding
@@ -23,10 +24,8 @@ class MainActivity : AppCompatActivity(), LoginView {
         presenter.onAttach(this)
 
         binding.button.setOnClickListener {
-            presenter.validateCredential(
-                binding.textInput.editText?.text.toString(),
-                binding.textPassword.editText?.text.toString()
-            )
+            presenter.validateCredential()
+//            startActivity(Intent(this, Home::class.java))
 
         }
 
@@ -36,17 +35,25 @@ class MainActivity : AppCompatActivity(), LoginView {
 
         binding.textInput.editText?.doOnTextChanged() { text, start, before, count ->
             validateInput()
-            if (binding.textInput.editText?.text?.length!! < 5) {
+            presenter.validateUser(
+                binding.textInput.editText?.text.toString()
+            )
+
+            /*if (binding.textInput.editText?.text?.length!! < 5) {
                 binding.textInput.error = "Invalid User"
             } else {
                 binding.textInput.isErrorEnabled = false
-            }
+            }*/
 
 
         }
 
         binding.textPassword.editText?.doOnTextChanged { text, start, before, count ->
             validateInput()
+            presenter.validatePassword(
+                binding.textPassword.editText?.text.toString()
+            )
+
         }
 
     }
@@ -66,9 +73,13 @@ class MainActivity : AppCompatActivity(), LoginView {
         binding.progressIndicator.isVisible = false
     }
 
-    override fun onError(message: String) {
+    override fun onError(code: Int, message: String) {
+        when (code) {
+            1 -> binding.textInput.error = message
+            2 -> binding.textPassword.error = message
+            else -> binding.textInput.isErrorEnabled = false
+        }
 
-        binding.textPassword.error = message
 
 
 
@@ -89,9 +100,16 @@ class MainActivity : AppCompatActivity(), LoginView {
     }
 
     override fun onSuccessLogin() {
-        binding.textInput.isErrorEnabled = false
-        binding.textPassword.isErrorEnabled = false
         Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this,Home::class.java))
+    }
+
+    override fun onErrorUser() {
+        binding.textInput.isErrorEnabled = false
+    }
+
+    override fun onErrorPassword() {
+        binding.textPassword.isErrorEnabled = false
     }
 
     override fun onDestroy() {
