@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), LoginView {
 
         binding.button.setOnClickListener {
             presenter.validateCredential()
-//            startActivity(Intent(this, Home::class.java))
+
 
         }
 
@@ -38,12 +38,6 @@ class MainActivity : AppCompatActivity(), LoginView {
             presenter.validateUser(
                 binding.textInput.editText?.text.toString()
             )
-
-            /*if (binding.textInput.editText?.text?.length!! < 5) {
-                binding.textInput.error = "Invalid User"
-            } else {
-                binding.textInput.isErrorEnabled = false
-            }*/
 
 
         }
@@ -79,9 +73,6 @@ class MainActivity : AppCompatActivity(), LoginView {
             2 -> binding.textPassword.error = message
             else -> binding.textInput.isErrorEnabled = false
         }
-
-
-
 
         /*AlertDialog.Builder(this)
             .setMessage(message)
