@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 
-class CredentialApi {
+class CredentialLoginApi {
     fun registerUser(email: String, password: String): Flow<ResponseStatus<RegisterResult>> = flow {
         val model = LoginRegisterModel(email, password)
         try {
             val result = NetworkClient
-                .makeCallApi("/register?delay=5", NetworkClient.METHOD.POST, model.serialized())
+                .makeCallApi("/login?delay=5", NetworkClient.METHOD.POST, model.serialized())
                 .execute()
             val response = if (result.isSuccessful) {
                 val data: RegisterResult = deserializeJson<RegisterResult>(result.body?.string() ?: "") ?: RegisterResult()

@@ -5,8 +5,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import com.example.mvp.data.api.CredentialApi
+import com.example.mvp.data.api.CredentialLoginApi
+import com.example.mvp.data.api.UserApi
+import com.example.mvp.data.model.UserPagination
 import com.example.mvp.databinding.ActivityMainBinding
 import com.example.mvp.features.homepage.Home
 import com.example.mvp.features.loginUi.LoginPresenter
@@ -15,7 +20,7 @@ import com.example.mvp.features.regis.MainRegis
 
 class MainActivity : AppCompatActivity(), LoginView {
     private lateinit var binding: ActivityMainBinding
-    private val presenter = LoginPresenter()
+    private val presenter = LoginPresenter(CredentialLoginApi(), UserApi())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -24,7 +29,10 @@ class MainActivity : AppCompatActivity(), LoginView {
         presenter.onAttach(this)
 
         binding.button.setOnClickListener {
-            presenter.validateCredential()
+            presenter.validateCredential(
+                binding.textInput.editText?.text.toString(),
+                binding.textPassword.editText?.text.toString()
+            )
 
 
         }
@@ -71,16 +79,16 @@ class MainActivity : AppCompatActivity(), LoginView {
         when (code) {
             1 -> binding.textInput.error = message
             2 -> binding.textPassword.error = message
-            else -> binding.textInput.isErrorEnabled = false
+            else -> {
+                AlertDialog.Builder(this)
+                    .setMessage("code: $code, $message")
+                    .setPositiveButton("Ok", this::dialogClickListener)
+                    .setNegativeButton("Cancel", this::dialogClickListener)
+                    .create()
+                    .show()
+            }
         }
 
-        /*AlertDialog.Builder(this)
-            .setMessage(message)
-            .setPositiveButton("Ok", this::dialogClickListener)
-            .setNegativeButton("Cancel", this::dialogClickListener)
-            .create()
-            .show()*/
-//        binding.textPassword.error = "Password must contain Uppercase, Lowercase, Numbers, Special Character & At least 8 Character"
     }
     private fun dialogClickListener(dialogInterface: DialogInterface, button: Int) {
         when (button) {
@@ -90,9 +98,9 @@ class MainActivity : AppCompatActivity(), LoginView {
         }
     }
 
-    override fun onSuccessLogin() {
-        Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this,Home::class.java))
+
+    override fun onSuccessLogin(username: String, password: String) {
+        presenter.register(username, password)
     }
 
     override fun onErrorUser() {
@@ -101,6 +109,20 @@ class MainActivity : AppCompatActivity(), LoginView {
 
     override fun onErrorPassword() {
         binding.textPassword.isErrorEnabled = false
+    }
+
+    override fun onSuccessGetUser(user: UserPagination) {
+        AlertDialog.Builder(this)
+            .setMessage("user -> $user")
+            .setPositiveButton("Ok", this::dialogClickListener)
+            .setNegativeButton("Cancel", this::dialogClickListener)
+            .create()
+            .show()
+    }
+
+    override fun onSuccessRegister() {
+        Toast.makeText(this, "Success Login", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this,Home::class.java))
     }
 
     override fun onDestroy() {
